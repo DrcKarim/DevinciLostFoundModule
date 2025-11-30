@@ -1,8 +1,10 @@
 <?php
+namespace DescriptionWithAI;
+
 return [
     'service_manager' => [
         'factories' => [
-            'DevinciLostFoundModule_ImageAiService' => \DevinciLostFoundModule\Service\ImageAiServiceFactory::class,
+            Service\TextAiService::class => Service\TextAiServiceFactory::class,
         ],
     ],
 ];
