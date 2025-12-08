@@ -22,15 +22,30 @@ class Module extends AbstractModule
     }
 public function processTextDescription(Event $event)
 {
-    $logger = $this->getServiceLocator()->get('Omeka\Logger');
-    $logger->info("AI module triggered");
+    try {
+        // Increase PHP execution time for AI processing
+        set_time_limit(300); // 5 minutes
+        
+        $services = $this->getServiceLocator();
+        $logger = $services->get('Omeka\\Logger');
+        $logger->info("AI module triggered");
 
-    // 1) Get ENTITY from event
-    $entity = $event->getParam('response')->getContent();
+        // 1) Get ENTITY from event
+        $response = $event->getParam('response');
+        if (!$response) {
+            $logger->error("No response found in event");
+            return;
+        }
+        
+        $entity = $response->getContent();
+        if (!$entity) {
+            $logger->error("No entity found in response");
+            return;
+        }
 
-    // 2) Convert entity → representation
-    $api = $this->getServiceLocator()->get('Omeka\ApiManager');
-    $item = $api->read('items', $entity->getId())->getContent();
+        // 2) Convert entity → representation
+        $api = $services->get('Omeka\ApiManager');
+        $item = $api->read('items', $entity->getId())->getContent();
 
     $logger->info("Item ID: " . $item->id());
 
@@ -42,33 +57,58 @@ public function processTextDescription(Event $event)
     }
 
     $text = $desc->value();
-    $logger->info("User description: " . $text);
+        $logger->info("User description: " . $text);
 
-    // 4) Call AI service
-    $ai = $this->getServiceLocator()->get(Service\TextAiService::class);
-    $aiSummary = $ai->summarizeText($text);
+        // 4) Call AI service with timeout handling
+        $logger->info("Starting AI processing for item ID: " . $item->id());
+        
+        $ai = $services->get(Service\TextAiService::class);
+        
+        // Set a reasonable timeout for AI processing
+        $aiSummary = null;
+        $startTime = microtime(true);
+        
+        try {
+            // Use a shorter timeout to prevent hanging
+            ini_set('default_socket_timeout', 30);
+            $aiSummary = $ai->summarizeText($text);
+        } catch (Exception $aiException) {
+            $logger->error("AI processing exception: " . $aiException->getMessage());
+        }
+        
+        $processingTime = round(microtime(true) - $startTime, 2);
 
-    if (!$aiSummary) {
-        $logger->error("AI returned null.");
-        return;
+        if (!$aiSummary || empty(trim($aiSummary))) {
+            $logger->info("AI processing failed or returned empty result after {$processingTime} seconds. Item will be saved without AI summary.");
+            $aiSummary = "Automatic description pending - manual review";
+        } else {
+            $logger->info("AI processing completed successfully in {$processingTime} seconds");
+        }
+
+        $logger->info("AI summary: " . $aiSummary);
+
+        // 5) READ EXISTING o:data (stored as literal JSON)
+        $dataLiteral = $item->value('o:data'); // Returns ValueRepresentation or null
+        $data = $dataLiteral ? json_decode($dataLiteral->value(), true) : [];
+
+        // 6) Add our AI result
+        $data['ai_description'] = $aiSummary;
+
+        // 7) SAVE BACK into item
+        // o:data expects a literal JSON string
+        $api->update('items', $item->id(), [
+            'o:data' => json_encode($data)
+        ], [], ['isPartial' => true]);
+
+        $logger->info("AI description saved into o:data successfully.");
+        
+    } catch (\Exception $e) {
+        // Log the error but don't break the item creation
+        if (isset($logger)) {
+            $logger->error("DescriptionWithAI module error: " . $e->getMessage());
+            $logger->error("Stack trace: " . $e->getTraceAsString());
+        }
     }
-
-    $logger->info("AI summary: " . $aiSummary);
-
-    // 5) READ EXISTING o:data (stored as literal JSON)
-    $dataLiteral = $item->value('o:data'); // Returns ValueRepresentation or null
-    $data = $dataLiteral ? json_decode($dataLiteral->value(), true) : [];
-
-    // 6) Add our AI result
-    $data['ai_description'] = $aiSummary;
-
-    // 7) SAVE BACK into item
-    // o:data expects a literal JSON string
-    $api->update('items', $item->id(), [
-        'o:data' => json_encode($data)
-    ], [], ['isPartial' => true]);
-
-    $logger->info("AI description saved into o:data successfully.");
 }
 
 
