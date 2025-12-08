@@ -1,6 +1,6 @@
-# 🚀 DevInci Lost & Found - Guide de Démarrage
+# DevInci Lost & Found - Guide de Démarrage
 
-## 📋 Prérequis
+## Prérequis
 
 1. **Serveur Web** : Apache/XAMPP/MAMP avec PHP 8.0+
 2. **Base de données** : MySQL
@@ -8,7 +8,7 @@
 4. **Ollama** : AI runtime pour le matching intelligent
 5. **Python 3** : Pour servir le frontend
 
-## 🔧 Installation
+## Installation
 
 ### 1. Configuration d'Omeka-S
 
@@ -50,7 +50,7 @@ Vérifier qu'Ollama fonctionne :
 curl http://localhost:11434/api/tags
 ```
 
-## ▶️ Lancement du Projet (Méthode Simple)
+## ▶Lancement du Projet (Méthode Simple)
 
 ### Option 1 : Script Automatique (Recommandé)
 
@@ -60,11 +60,11 @@ cd DevinciLostFound
 ```
 
 Le script va :
-- ✅ Vérifier qu'Ollama est actif
-- ✅ Vérifier que le modèle llama2 est installé
-- ✅ Vérifier qu'Omeka-S est accessible
-- 🔍 Démarrer l'API de recherche (port 8083)
-- 🌐 Démarrer le frontend (port 8085)
+-  Vérifier qu'Ollama est actif
+-  Vérifier que le modèle llama2 est installé
+-  Vérifier qu'Omeka-S est accessible
+-  Démarrer l'API de recherche (port 8083)
+-  Démarrer le frontend (port 8085)
 
 **Arrêter les serveurs :** Appuyez sur `Ctrl+C`
 
@@ -94,9 +94,9 @@ Ouvrir dans le navigateur :
 http://localhost:8085/apiOmk.html
 ```
 
-**⚠️ Important :** Si la page ne charge pas, faites un hard refresh : `Cmd + Shift + R` (Mac) ou `Ctrl + Shift + R` (Windows)
+** Important :** Si la page ne charge pas, faites un hard refresh : `Cmd + Shift + R` (Mac) ou `Ctrl + Shift + R` (Windows)
 
-## 🎯 Utilisation
+## Utilisation
 
 ### Panel Gauche - Déclarer un Objet Trouvé
 
@@ -120,10 +120,10 @@ http://localhost:8085/apiOmk.html
 3. Cliquer sur **"🔍 Rechercher"**
 4. **Attendre 30-60 secondes** (l'IA compare avec tous les objets)
 5. Résultats possibles :
-   - ✅ **Match trouvé** : Score de similarité + coordonnées du trouveur
-   - 💡 **Suggestion aléatoire** : Si aucune correspondance exacte (fond jaune)
+   -  **Match trouvé** : Score de similarité + coordonnées du trouveur
+   -  **Suggestion aléatoire** : Si aucune correspondance exacte (fond jaune)
 
-## 🔍 Architecture du Système
+##  Architecture du Système
 
 ### Composants Principaux
 
@@ -131,9 +131,9 @@ http://localhost:8085/apiOmk.html
 ProjetNewDepart/
 ├── omk_thyp_25-26_clone/                 # Backend Omeka-S
 │   └── modules/
-│       └── DescriptionWithAI/            # ⭐ MODULE PRINCIPAL
+│       └── DescriptionWithAI/             # MODULE PRINCIPAL
 │           ├── Module.php                 # Écouteur d'événements
-│           ├── api.php                    # ⭐ API standalone de recherche (port 8083)
+│           ├── api.php                    # API standalone de recherche (port 8083)
 │           ├── config/
 │           │   └── module.config.php      # Routes et services
 │           └── src/
@@ -145,10 +145,10 @@ ProjetNewDepart/
 │
 └── DevinciLostFound/                     # Frontend
     ├── apiOmk.html                        # Interface utilisateur
-    ├── start.sh                           # ⭐ Script de lancement automatique
+    ├── start.sh                           # Script de lancement automatique
     ├── modules/
     │   ├── omk.js                         # Client API Omeka-S
-    │   └── authParams.js                  # ⭐ Configuration API (URL Omeka)
+    │   └── authParams.js                  # Configuration API (URL Omeka)
     └── assets/                            # CSS & images
 ```
 
@@ -232,22 +232,22 @@ Key-Credential: rZDAzH9MAAH3XjZE17xUxHu7rKQyOpSA
 GET http://localhost/omk_thyp_25-26_clone/api/properties?vocabulary_prefix=dcterms
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### Clés API Omeka-S
 
 Fichier : `/DevinciLostFound/modules/authParams.js`
 ```javascript
 export const pa = {
-    apiOmk: 'http://localhost/omk_thyp_25-26_clone/api/',  // ⚠️ Chemin Omeka-S
+    apiOmk: 'http://localhost/omk_thyp_25-26_clone/api/',  //  Chemin Omeka-S
     ident: 'gWaqHYnwYbVmwFToXWXTaVXCKPdT3lnp',
     key: 'rZDAzH9MAAH3XjZE17xUxHu7rKQyOpSA'
 };
 ```
 
-**⚠️ Important :** Si vous déplacez Omeka-S vers un autre chemin, mettez à jour `apiOmk` ici.
+** Important :** Si vous déplacez Omeka-S vers un autre chemin, mettez à jour `apiOmk` ici.
 
-**⚠️ Important :** Si vous changez le nom du dossier Omeka-S, mettez à jour aussi `start.sh`.
+** Important :** Si vous changez le nom du dossier Omeka-S, mettez à jour aussi `start.sh`.
 
 ### Configuration Ollama
 
@@ -263,7 +263,7 @@ Paramètres optimisés pour la vitesse :
 - `num_ctx`: 512 (contexte réduit)
 - `timeout`: 60 secondes
 
-## 🐛 Dépannage
+## Dépannage
 
 ### Problème : "Cross-Origin Request Blocked" ou "NetworkError"
 **Cause :** Les serveurs ne sont pas démarrés ou sur les mauvais ports  
@@ -336,7 +336,7 @@ curl -X POST http://localhost:11434/api/generate -d '{
 3. Dans admin : Modules → Refresh
 4. Vérifier les logs : `tail -f omk_thyp_25-26_clone/logs/application.log`
 
-## 📊 Monitoring
+## Monitoring
 
 ### Logs Module
 ```bash
@@ -350,21 +350,21 @@ tail -f /omeka-s/logs/application.log
 ps aux | grep ollama
 ```
 
-## 🚀 Optimisations
+## Optimisations
 
 ### Performance IA
-- ✅ Limite de 10 objets maximum par recherche
-- ✅ Comparaison one-by-one au lieu de batch
-- ✅ Timeout réduit à 60s (échec rapide)
-- ✅ Prompts simplifiés
-- ✅ Early exit si score >90%
+-  Limite de 10 objets maximum par recherche
+-  Comparaison one-by-one au lieu de batch
+-  Timeout réduit à 60s (échec rapide)
+-  Prompts simplifiés
+-  Early exit si score >90%
 
 ### Fallback Intelligence
 - Si IA échoue → Suggestion aléatoire
 - Si aucun match >50% → Suggestion aléatoire
 - Interface affiche clairement les suggestions (fond jaune)
 
-## 📝 Exemple de Workflow Complet
+## Exemple de Workflow Complet
 
 ### Étape 1 : Préparation
 ```bash
@@ -391,16 +391,16 @@ cd DevinciLostFound
      Lieu: Cafétéria - Table 5
      ```
 3. Cliquer **"Envoyer à Omeka-S"**
-4. ✅ Objet créé avec ID 107 (par exemple)
-5. ✅ IA génère automatiquement un résumé
+4.  Objet créé avec ID 107 (par exemple)
+5.  IA génère automatiquement un résumé
 
 ### Étape 3 : Rechercher un Objet Perdu
 1. Panel droit, remplir :
    - **Titre** : Mon portefeuille
    - **Description** : J'ai perdu mon portefeuille noir hier à la cafétéria
 2. Cliquer **"🔍 Rechercher"**
-3. ⏳ Attendre 30-90 secondes (animation de chargement)
-4. ✅ Résultat affiché :
+3.  Attendre 30-90 secondes (animation de chargement)
+4.  Résultat affiché :
    - Score : 85%
    - Contact : Marie Dupont - 06 12 34 56 78
    - Lieu : Cafétéria - Table 5
@@ -409,10 +409,10 @@ cd DevinciLostFound
 1. Rechercher quelque chose qui n'existe pas :
    - **Titre** : Licorne magique
    - **Description** : Une licorne rose avec des paillettes
-2. ✅ Suggestion aléatoire affichée (fond jaune)
+2. Suggestion aléatoire affichée (fond jaune)
 3. Message : "Aucune correspondance exacte trouvée. Voici une suggestion..."
 
-## 📦 Déploiement pour le Professeur
+## Déploiement pour le Professeur
 
 ### Fichiers à Fournir
 ```
@@ -444,7 +444,7 @@ cd DevinciLostFound
 # 6. Tester à http://localhost:8085/apiOmk.html
 ```
 
-## 🎓 Crédits
+## Crédits
 
 **Projet réalisé par :** [Votre nom]  
 **Module Omeka-S :** DescriptionWithAI  
@@ -453,7 +453,7 @@ cd DevinciLostFound
 
 ---
 
-## 📞 Support
+## Support
 
 Pour toute question ou problème :
 1. Vérifier cette documentation
@@ -474,7 +474,7 @@ open http://localhost:8085/apiOmk.html
 # Résultat : Match trouvé avec score ~85%
 ```
 
-## 🎓 Structure du Code
+## Structure du Code
 
 ### Module DescriptionWithAI
 
@@ -498,17 +498,17 @@ open http://localhost:8085/apiOmk.html
 
 ---
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
-- ✅ Création d'objets trouvés avec photos
-- ✅ Génération automatique de descriptions IA
-- ✅ Recherche sémantique avec Ollama
-- ✅ Comparaison intelligente one-by-one
-- ✅ Fallback vers suggestions aléatoires
-- ✅ Extraction automatique des contacts
-- ✅ Interface bilingue (FR)
-- ✅ Animations de chargement
-- ✅ Responsive design
+-  Création d'objets trouvés avec photos
+-  Génération automatique de descriptions IA
+-  Recherche sémantique avec Ollama
+-  Comparaison intelligente one-by-one
+-  Fallback vers suggestions aléatoires
+-  Extraction automatique des contacts
+-  Interface bilingue (FR)
+-  Animations de chargement
+-  Responsive design
 
 ---
 
